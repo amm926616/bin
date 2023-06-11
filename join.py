@@ -1,211 +1,63 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 24 13:34:08 2023
+#!/usr/bin/env python
 
-@author: adam178
-"""
-
-from PIL import Image
 import os
-from time import sleep
-from tkinter import filedialog
+from PIL import Image
 
+# Get the current working directory
+folder_path = os.getcwd()
 
-class Join:
-    def __init__(self):
-        self.dir = 'joined_images'
-        self.folder_path = ''
-        self.name_count = 1
-        self.extension = 0
+# Define the list of valid image extensions
+valid_extensions = ['.jpg', '.jpeg', '.png', 'webp']
 
-    def select_folder(self):
-        self.folder_path = filedialog.askdirectory(initialdir = '.', title = 'Select a folder.')
-        return self.folder_path
-    
-    def create_dir(self):
-        dir = self.dir
-        
-        try:
-            os.mkdir(self.dir)
-        except OSError:
-            print("The directory already existed $s " % dir)
-        else:
-            print("Successfully created the directory %s " % dir)   
-            
-    def rename(self, old_name):
-        extension = '_' + str(self.extension) + '.jpg'
-        new_name = os.path.join(str(self.dir), str(self.name_count) + str(extension))
+# Get the list of image files in the folder with valid extensions
+image_files = [file for file in os.listdir(folder_path) if os.path.splitext(file)[1].lower() in valid_extensions]
 
-        os.rename(old_name, new_name)
-        
-    def join_2(self, image1, image2):
-        im1 = Image.open(image1)
-        im2 = Image.open(image2)
-    
-        new_im = Image.new('RGB', (im1.width, im1.height + im2.height))
-    
-        new_im.paste(im1, (0, 0))
-        new_im.paste(im2, (0, im1.height))
-    
-        pre_name = 'asdfasdf.jpg'
-        new_im.save(pre_name)
-        
-        return pre_name
-    
-    def join_3(self, image1, image2, image3):
-        im1 = Image.open(image1)
-        im2 = Image.open(image2)
-        im3 = Image.open(image3)
-        
-        new_im = Image.new('RGB', (im1.width, im1.height + im2.height + im3.height))
-    
-        new_im.paste(im1, (0, 0))
-        new_im.paste(im2, (0, im1.height))
-        new_im.paste(im3, (0, im1.height + im2.height))
-    
-        pre_name = "asdfasdf.jpg"
-        new_im.save(pre_name)
-        
-        return pre_name
-    
-    def join_images(self):
-        images = os.listdir(self.folder_path)
-        images = [i for i in images if i.endswith('.jpg')]
-        images.sort()
-        
-        #၂ နဲ့ ၃ နဲ့စားပြီးအကြွင်းကိုယူ
-        check_factor_of2 = len(images) % 2
-        check_factor_of3 = len(images) % 3
-        
-    # files အရေအတွက်ကိုပြပြီးတော့ မေးမယ်။
-        number_pictures = len(images)
-        print(f"\nThe number of pictures are {number_pictures}")
-        method = input('\nDo you want to join by 2 or 3?(2/3) - pressing other keys will end the program: ')
+# temporary renaming the images so that there isn't have confictions between old name and new name.
+for filename in image_files:
+    new_filename = 'a' + filename
+    old_path = os.path.join(folder_path, filename)
+    new_path = os.path.join(folder_path, new_filename)
+    os.rename(old_path, new_path)
 
-    # method 2 and variables.
-        if method == '2' and check_factor_of2 == 0:
-            for i in range(0, len(images), 2):
-                image1 = self.folder_path + '/' + images[i]
-                image2 = self.folder_path + '/' + images[i+1]
-                old_name = self.join_2(image1, image2)
-                
-                os.remove(image1)
-                os.remove(image2)
-                
-                self.rename(old_name)
+# Get the list of image files in the folder with valid extensions
+image_files = [file for file in os.listdir(folder_path) if os.path.splitext(file)[1].lower() in valid_extensions]
 
-                self.name_count += 1
+# Sort the image files based on their names
+image_files.sort()
 
-                
-        elif method == '2' and check_factor_of2 == 1:
-            theone = images.pop()
-            theone = self.folder_path + '/' + theone
-            for i in range(0, len(images), 2):
-                image1 = self.folder_path + '/' + images[i]
-                image2 = self.folder_path + '/' + images[i+1]
-                old_name = self.join_2(image1, image2)     
-                
-                os.remove(image1)
-                os.remove(image2)
-                
-                self.rename(old_name)
-            
-                self.name_count += 1
-            
-            self.rename(theone)
+# Set the number of images to join vertically
+images_per_join = int(input("Numbers of images to be joined together: "))
 
+# Calculate the total number of joined images
+total_joined_images = len(image_files) // images_per_join
 
-    # method 3 and variables.
-        elif method == '3' and check_factor_of3 == 0:
-            for i in range(0, len(images), 3):
-                image1 = self.folder_path + '/' + images[i]
-                image2 = self.folder_path + '/' + images[i+1]
-                image3 = self.folder_path + '/' + images[i+2]
-                old_name = self.join_3(image1, image2,image3)
-                
-                os.remove(image1)
-                os.remove(image2)
-                os.remove(image3)
-                
-                self.rename(old_name)
+# Iterate over the image files and join them vertically
+for i in range(0, len(image_files), images_per_join):
+    # Create a list to store the image objects
+    images_to_join = []
 
-                self.name_count += 1
-                
-        elif method == '3' and check_factor_of3 == 1:
-            theone = images.pop()
-            theone = self.folder_path + '/' + theone 
-            for i in range(0, len(images), 3):
-                image1 = self.folder_path + '/' + images[i]
-                image2 = self.folder_path + '/' + images[i+1]
-                image3 = self.folder_path + '/' + images[i+2]
-                old_name = self.join_3(image1, image2,image3)
-                
-                os.remove(image1)
-                os.remove(image2)
-                os.remove(image3)
-                
-                self.rename(old_name)
+    # Iterate over the next `images_per_join` files and open them as images
+    for j in range(images_per_join):
+        if i + j < len(image_files):
+            image_path = os.path.join(folder_path, image_files[i + j])
+            image = Image.open(image_path)
+            images_to_join.append(image)
 
-                self.name_count += 1
-                
-                
-            self.rename(theone)
-                
-        
-        elif method == '3' and check_factor_of3 == 2:
-            second = images.pop()
-            first = images.pop()
-            for i in range(0, len(images), 3):
-                image1 = self.folder_path + '/' + images[i]
-                image2 = self.folder_path + '/' + images[i+1]
-                image3 = self.folder_path + '/' + images[i+2]
-                old_name = self.join_3(image1, image2,image3)
-                            
-                os.remove(image1)
-                os.remove(image2)
-                os.remove(image3)
-                
-                self.rename(old_name)
+    # Join the images vertically
+    joined_image = Image.new('RGB', (images_to_join[0].width, sum(image.height for image in images_to_join)))
+    y_offset = 0
+    for image in images_to_join:
+        joined_image.paste(image, (0, y_offset))
+        y_offset += image.height
 
-                self.name_count += 1
-                
-            old_name = self.join_2(first, second)
-            self.rename(old_name)
-            
-            # တစ်ခြားဟာနှိပ်ရင် else ထွက်မယ်။
-        else:
-            print('\nYou ended the program.')
+    # Save the joined image with the correct name
+    joined_image_path = os.path.join(folder_path, f'{str(i // images_per_join + 1).zfill(4)}.jpg')
+    joined_image.save(joined_image_path)
 
-def join_process():
-    jn = Join()
-    jn.extension = extension
-    print("\nThis program will only work for jpg images, so please format the pictures before using it.")
-    sleep(1)
+    # Delete the old images
+    for j in range(images_per_join):
+        if i + j < len(image_files):
+            image_path = os.path.join(folder_path, image_files[i + j])
+            os.remove(image_path)
 
-    folder_path = jn.select_folder()
-    new_dir = input('\nDo you want to save the pictures to a "joined images" folder or replace the original folder?(new/replace):')
-    if new_dir == 'new':
-        jn.create_dir()
-        jn.join_images()
-    elif new_dir == 'replace':
-        jn.dir = str(folder_path)
-        jn.join_images()
-
-extension = 0
-run_again = ''
-while run_again == '' or run_again == 'y' or run_again == 'Y':
-    if __name__ == "__main__":
-        while True:
-            join_process()
-
-
-
-
-        
-        
-        
-        
-        
-
-    
+print('done!')

@@ -6,14 +6,27 @@ from PIL import Image
 # Get the current working directory
 folder_path = os.getcwd()
 
-# Get the list of image files in the folder
-image_files = [file for file in os.listdir(folder_path) if file.endswith('.jpg')]
+# Define the list of valid image extensions
+valid_extensions = ['.jpg', '.jpeg', '.png', 'webp']
+
+# Get the list of image files in the folder with valid extensions
+image_files = [file for file in os.listdir(folder_path) if os.path.splitext(file)[1].lower() in valid_extensions]
+
+# temporary renaming the images so that there isn't have confictions between old name and new name.
+for filename in image_files:
+    new_filename = 'a' + filename
+    old_path = os.path.join(folder_path, filename)
+    new_path = os.path.join(folder_path, new_filename)
+    os.rename(old_path, new_path)
+
+# Get the list of image files in the folder with valid extensions
+image_files = [file for file in os.listdir(folder_path) if os.path.splitext(file)[1].lower() in valid_extensions]
 
 # Sort the image files based on their names
 image_files.sort()
 
 # Set the number of images to join vertically
-images_per_join = 5
+images_per_join = int(input("Numbers of images to be joined together: "))
 
 # Calculate the total number of joined images
 total_joined_images = len(image_files) // images_per_join
@@ -47,3 +60,4 @@ for i in range(0, len(image_files), images_per_join):
             image_path = os.path.join(folder_path, image_files[i + j])
             os.remove(image_path)
 
+print('done!')
