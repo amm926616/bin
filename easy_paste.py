@@ -9,6 +9,7 @@ from tkinter import filedialog
 import pyperclip as clip
 import os
 from settings import Settings
+import tkinter.messagebox as messagebox
 
 class EasyPaste():
     def __init__(self, master):
@@ -85,10 +86,12 @@ class EasyPaste():
         clip.copy(self.line)
 
     def restart_program(self):
-        self.master.destroy()
-        root = tk.Tk()
-        EasyPaste(root)
-        root.mainloop()
+        confirmed = messagebox.askyesno("Confirmation", "Are you sure you choose another file?")
+        if confirmed:
+            self.master.destroy()
+            root = tk.Tk()
+            EasyPaste(root)
+            root.mainloop()
 
 if __name__ == "__main__":
     root = tk.Tk()
