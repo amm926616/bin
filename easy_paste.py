@@ -47,6 +47,7 @@ class EasyPaste():
             if self.i > len(self.lines) or self.i < len(self.lines):
                 self.i = 0
             self.line = self.lines[self.i]
+            clip.copy(self.line)
             self.text_display.insert("1.0", self.line)
             self.master.attributes('-topmost', 1)
         else:
@@ -54,7 +55,7 @@ class EasyPaste():
 
     # function to get the file location 
     def ask_dir(self):
-        file_path = filedialog.askopenfilename(initialdir="~/Documents/", filetypes=(('text files', '.txt'),))
+        file_path = filedialog.askopenfilename(initialdir="~/Documents/scanlations/", filetypes=(('text files', '.txt'),))
         return file_path
 
     def next_line(self):
