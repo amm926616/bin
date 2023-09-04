@@ -11,7 +11,7 @@ output_directory = "processed_" + os.path.basename(image_directory)
 os.makedirs(output_directory)
 
 # Target width for resizing
-target_width = 720
+target_width = 768
 
 # Create the output directory if it doesn't exist
 os.makedirs(output_directory, exist_ok=True)

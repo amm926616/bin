@@ -1,29 +1,12 @@
-"""
-Created on Mon Aug 14 10:23:08 2023
-
-@author: adam178
-"""
-
 import pyperclip
 import tkinter as tk
 from tkinter import filedialog
-from pynput import keyboard
-from pynput.keyboard import Listener
-
-def newline_remove(raw_lines):
-    new_lines = []
-    for i in raw_lines:
-        if not i.rstrip() == "":
-            new_lines.append(i.rstrip())
-    
-    return new_lines
+import pyxhook
 
 file_path = filedialog.askopenfilename(initialdir="/home/adam178/scanlations/texts/", filetypes=(('text files', '.txt'),))  # Provide the actual path to your text file
 
 with open(file_path, 'r', encoding='utf-8') as f:
-    raw_lines = f.readlines()
-
-lines = newline_remove(raw_lines)
+    lines = f.readlines()
 
 i = 0
 ctrl_pressed = False
@@ -33,7 +16,6 @@ def copy_line():
     line = f"({i + 1}): {lines[i]}"
     text_display.delete("1.0", tk.END)
     text_display.insert("1.0", line)
-
 
 def choose_file():
     global lines, i
@@ -50,7 +32,6 @@ def choose_file():
     
     copy_line()
 
-
 def check_eol():
     global i
     if i < 0:
@@ -58,41 +39,45 @@ def check_eol():
     elif i > len(lines) - 1:
         i = 0
 
-def on_press(key):
+def on_key_event(event):
     global i, ctrl_pressed
-    if key == keyboard.Key.ctrl:
+
+    if event.Ascii == 29:  # ASCII value for Ctrl key
         ctrl_pressed = True
+    elif event.Ascii == 17:  # ASCII value for Ctrl+Q
+        hookman.cancel()
+    else:
+        if event.Ascii == 38 and ctrl_pressed:  # ASCII value for 'up' arrow key
+            i -= 1
+            check_eol()
+            copy_line()
+            print("-1")
+        elif event.Ascii == 40 and ctrl_pressed:  # ASCII value for 'down' arrow key
+            i += 1
+            check_eol()
+            copy_line()
+            print("+1")
+        elif event.Ascii == 37 and ctrl_pressed:  # ASCII value for 'left' arrow key
+            i -= 2
+            check_eol()
+            copy_line()
+            print("-2")
+        elif (event.Ascii == 39 and ctrl_pressed) or (event.Ascii == 22 and ctrl_pressed):  # ASCII value for 'right' arrow key or 'v' key
+            i += 2
+            check_eol()
+            copy_line()
+            print("+2")
 
-    elif key == keyboard.Key.up and ctrl_pressed:
-        i -= 1
-        check_eol()
-        copy_line()
-        print("-1")
-
-    elif key == keyboard.Key.down and ctrl_pressed or key == keyboard.KeyCode.from_char('v') and ctrl_pressed:
-        i += 1
-        check_eol()
-        copy_line()
-        print("+1")
-
-    elif key == keyboard.Key.left and ctrl_pressed:
-        i -= 2
-        check_eol()
-        copy_line()
-        print("-2")
-    
-    elif key == keyboard.Key.right and ctrl_pressed:
-        i += 2
-        check_eol()
-        copy_line()
-        print("+2")
-
-
-def on_release(key):
+def on_key_release(event):
     global ctrl_pressed
-    if key == keyboard.Key.ctrl:
+
+    if event.Ascii == 29:  # ASCII value for Ctrl key
         ctrl_pressed = False
 
+hookman = pyxhook.HookManager()
+hookman.KeyDown = on_key_event
+hookman.KeyUp = on_key_release
+hookman.HookKeyboard()
 
 # GUI setup
 root = tk.Tk()
@@ -113,7 +98,7 @@ choose_file_button.pack()
 # copy the first line
 copy_line()
 
-# Set up the listener
-with Listener(on_press=on_press, on_release=on_release) as listener:
-    # Start GUI main loop
-    root.mainloop()
+# Start GUI main loop
+root.mainloop()
+
+hookman.cancel()  # Stop the hook manager after GUI main loop exits
