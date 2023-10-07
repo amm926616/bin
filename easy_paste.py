@@ -1,9 +1,3 @@
-"""
-Created on Mon Aug 14 10:23:08 2023
-
-@author: adam178
-"""
-
 import pyperclip
 import tkinter as tk
 from tkinter import filedialog
