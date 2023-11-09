@@ -12,7 +12,7 @@ print(f"Before adding: {amount}")
 arguments = sys.argv[1:]
 
 if not len(arguments) == 0:
-    if arguments[0] == "delete":
+    if arguments[0] == "reset":
         edit_values(0)
         print("Set amount to zero.")
         sys.exit()
