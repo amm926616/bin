@@ -1,4 +1,4 @@
-#! /usr/bin/env python 
+#! /usr/bin/env python
 
 import os
 import requests
@@ -26,6 +26,14 @@ def download_images(url):
         # Find all elements with class 'rel-link'
         rel_links = soup.find_all(class_='rel-link')
         
+        # Track downloaded images
+        downloaded_images = set()
+        
+        # Get list of already downloaded images
+        for filename in os.listdir(folder_name):
+            if filename.endswith('.jpg'):
+                downloaded_images.add(filename)
+        
         # Download each JPG image
         for rel_link in rel_links:
             # Get the href attribute containing the image URL
@@ -39,6 +47,11 @@ def download_images(url):
             if img_url.endswith('.jpg'):
                 # Get the filename from the URL
                 img_name = os.path.basename(img_url)
+                
+                # Check if image already downloaded
+                if img_name in downloaded_images:
+                    print(f"Skipping {img_name}, already downloaded.")
+                    continue
                 
                 # Get the image content
                 img_response = requests.get(img_url)
@@ -59,4 +72,3 @@ url = input("Enter the URL to scrape images from: ")
 
 # Call the function to download images
 download_images(url)
-
