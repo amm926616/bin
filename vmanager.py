@@ -51,6 +51,7 @@ class VocabularyManager(QtWidgets.QWidget):
 
         # Connect returnPressed signal to the search_entry method
         self.word_input.returnPressed.connect(self.search_entry)
+        self.meaning_input.returnPressed.connect(self.add_entry)
 
     def initDB(self):
         self.conn = sqlite3.connect('/home/adam178/.local/share/vmanager/vocabulary.db')
@@ -83,25 +84,30 @@ class VocabularyManager(QtWidgets.QWidget):
     #         else:
     #             self.result_text.setText('No entry found to update.')
 
+
     def delete_entry(self):
         word = self.word_input.text()
-        if (word != ""):
+        meaning = self.meaning_input.text()
+        if word and meaning:
             # Show confirmation dialog
             reply = QMessageBox.question(
-                self, 
-                'Delete Entry', 
-                f'Are you sure you want to delete the entry for "{word}"?',
-                QMessageBox.Yes | QMessageBox.No, 
+                self,
+                'Delete Entry',
+                f'Are you sure you want to delete the meaning "{meaning}" from the word "{word}"?',
+                QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No
             )
             # Proceed with deletion if the user confirms
             if reply == QMessageBox.Yes:
-                self.cursor.execute('DELETE FROM vocabulary WHERE word = ?', (word,))
+                self.cursor.execute('DELETE FROM vocabulary WHERE word = ? AND meaning = ?', (word, meaning))
                 if self.cursor.rowcount > 0:
                     self.conn.commit()
-                    self.result_text.setText(f'Deleted: {word}')
+                    self.result_text.setText(f'Deleted meaning "{meaning}" from word "{word}"')
                 else:
-                    self.result_text.setText('No entry found to delete.')
+                    self.result_text.setText('No matching meaning found for deletion.')
+        else:
+            self.result_text.setText('Please provide both word and meaning.')
+
 
     def search_entry(self):
         word = self.word_input.text()
@@ -112,6 +118,7 @@ class VocabularyManager(QtWidgets.QWidget):
             self.result_text.setText(display_text)
         else:
             self.result_text.setText('No entry found.')
+        self.meaning_input.clear() #clearing the meaning input box
 
     def view_all_entries(self):
         self.cursor.execute('SELECT word, meaning FROM vocabulary')
