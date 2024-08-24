@@ -67,7 +67,7 @@ def download_images(url):
 
 print("\033[31mAuto Getting link from the clipboard\033[0m")
 # Main URL of the page to scrape
-pyperclip.paste()
+url = pyperclip.paste()
 print("URL: ", url)
 
 # Call the function to download images

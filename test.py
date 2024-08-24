@@ -1,20 +1,20 @@
-import tkinter as tk
-from PIL import Image, ImageTk
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 
-# Create a window
-root = tk.Tk()
-root.title("Image Viewer")
+# Connect to the existing ChromeDriver instance
+driver = webdriver.Remote(command_executor='http://127.0.0.1:9515', options=webdriver.ChromeOptions())
 
-# Load the image
-image_path = "/home/adam178/Pictures/. erotic pics/194511.jpg"  # Replace with your image path
-image = Image.open(image_path)
+# Example usage
+driver.get('https://www.imagebam.com/image/e5a54f891357694')
 
-# Convert the image to a format Tkinter can use
-tk_image = ImageTk.PhotoImage(image)
+# Wait until the "Continue to your image" link is clickable and click it
+continue_button = driver.find_element(By.LINK_TEXT, 'Continue to your image')
+continue_button.click()
 
-# Create a Label widget to display the image
-label = tk.Label(root, image=tk_image)
-label.pack()
+# Wait until the image is loaded and then get its URL
+img_element = driver.find_element(By.TAG_NAME, 'img')
+img_url = img_element.get_attribute('src')
+print("Image URL:", img_url)
 
-# Run the Tkinter event loop
-root.mainloop()
+# Close the browser (optional)
+driver.quit()
