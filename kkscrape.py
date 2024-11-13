@@ -12,6 +12,19 @@ from tkinter import messagebox
 import pyperclip
 from urllib.parse import urlparse
 
+def get_unique_filename(directory, filename):
+    """Check if a file exists and, if it does, find a unique filename by appending an incrementing suffix."""
+    base_name, ext = os.path.splitext(filename)
+    counter = 1
+    new_filename = filename
+    
+    # Loop until we find a unique filename
+    while os.path.exists(os.path.join(directory, new_filename)):
+        new_filename = f"{base_name}-{counter}{ext}"
+        counter += 1
+
+    return new_filename
+
 def create_ascii(site):
     # Create ASCII art
     ascii_art = pyfiglet.figlet_format(site, font="slant")
@@ -46,7 +59,7 @@ headers = {
 
 # Extract folder name from the last segment of the URL
 folder_name = url.rstrip('/').split('/')[-1]
-save_folder = os.path.join("/run/media/adam178/Storage 2/.metart", folder_name)
+save_folder = os.path.join("/run/media/adam178/Storage/.MetArt-Second/", folder_name)
 
 # Create the folder if it doesn't exist
 if not os.path.exists(save_folder):
@@ -136,8 +149,10 @@ for container in image_containers:
                     print("Skipping this link. Probably dead image")
                     break
 
-                # Skip downloading if the image already exists
-                img_name = os.path.basename(high_res_url)
+                # Get the unique filename in the target directory
+                img_name = get_unique_filename(save_folder, os.path.basename(high_res_url))
+                
+                # Skip downloading if the image already exists                
                 if img_name in existing_files:
                     print(f"Image already exists, skipping: {img_name}")
                     success = True
