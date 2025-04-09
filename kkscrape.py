@@ -59,7 +59,7 @@ headers = {
 
 # Extract folder name from the last segment of the URL
 folder_name = url.rstrip('/').split('/')[-1]
-save_folder = os.path.join("/run/media/adam178/Storage/.MetArt-Second/", folder_name)
+save_folder = os.path.join("/Storage1/.MetArt-Second/", folder_name)
 
 # Create the folder if it doesn't exist
 if not os.path.exists(save_folder):
