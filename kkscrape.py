@@ -17,7 +17,7 @@ def get_unique_filename(directory, filename):
     base_name, ext = os.path.splitext(filename)
     counter = 1
     new_filename = filename
-    
+
     # Loop until we find a unique filename
     while os.path.exists(os.path.join(directory, new_filename)):
         new_filename = f"{base_name}-{counter}{ext}"
@@ -33,11 +33,11 @@ def create_ascii(site):
 
 print("\033[32mAuto Getting link from the clipboard\033[0m")
 # Main URL of the page to scrape
-url = pyperclip.paste()
+url = input("Enter the kitty-katz url to scrape: ")
 print("URL: ", url)
 
 # File to store downloaded URLs
-downloaded_url_file = '/home/adam178/.config/metart/downloaded_url.txt'
+downloaded_url_file = '/home/aiden178/.config/kkscrape/downloaded_url.txt'
 
 # Check if the URL has already been processed
 if not os.path.exists(downloaded_url_file):
@@ -59,7 +59,7 @@ headers = {
 
 # Extract folder name from the last segment of the URL
 folder_name = url.rstrip('/').split('/')[-1]
-save_folder = os.path.join("/run/media/adam178/Storage/.MetArt-Second/", folder_name)
+save_folder = os.path.join("/home/aiden178/Pictures/.kkscrape/", folder_name)
 
 # Create the folder if it doesn't exist
 if not os.path.exists(save_folder):
@@ -132,7 +132,7 @@ for container in image_containers:
                     img_tag = redirect_soup.find('img', id='imageid')
                     if img_tag:
                         high_res_url = img_tag.get('src')
-                        
+
                 elif "imagebam.com" in hostname:
                     # Handle turboimagehost.com
                     img_tag = redirect_soup.find('img', class_='main-image')
@@ -151,8 +151,8 @@ for container in image_containers:
 
                 # Get the unique filename in the target directory
                 img_name = get_unique_filename(save_folder, os.path.basename(high_res_url))
-                
-                # Skip downloading if the image already exists                
+
+                # Skip downloading if the image already exists
                 if img_name in existing_files:
                     print(f"Image already exists, skipping: {img_name}")
                     success = True
