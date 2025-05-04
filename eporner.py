@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 
-import os, subprocess
+import os 
+import subprocess
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 import pyfiglet
 from termcolor import colored
 import pyperclip
-import time, wget
+import time 
+import wget
 
 # Create ASCII art
 ascii_art = pyfiglet.figlet_format("eporners", font="slant")
@@ -42,7 +44,7 @@ def extract_image_urls(url):
     soup = BeautifulSoup(response.content, 'html.parser')
     
     # Extract the title of the page to create a folder
-    folder_name = os.path.join("/home/adam178/.eporners", sanitize_folder_name(url))
+    folder_name = os.path.join("~/Pictures/.eporners", sanitize_folder_name(url))
     
     os.makedirs(folder_name, exist_ok=True)
     

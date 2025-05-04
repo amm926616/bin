@@ -2,7 +2,7 @@
 
 # Check if a commit message was provided
 if [ -z "$1" ]; then
-  echo "Usage: ./git-auto.sh \"commit message\""
+  echo "Usage: ./git-main-update.sh \"commit message\""
   exit 1
 fi
 
