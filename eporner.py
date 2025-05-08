@@ -44,7 +44,7 @@ def extract_image_urls(url):
     soup = BeautifulSoup(response.content, 'html.parser')
     
     # Extract the title of the page to create a folder
-    folder_name = os.path.join("~/Pictures/.eporners", sanitize_folder_name(url))
+    folder_name = os.path.join("/data/.eporners", sanitize_folder_name(url))
     
     os.makedirs(folder_name, exist_ok=True)
     
