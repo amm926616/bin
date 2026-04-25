@@ -32,7 +32,7 @@ def download_images(url):
     
     # Extract the title of the page to create a folder
     title = soup.title.string.strip()
-    folder_name = os.path.join("/home/adam178/.pornpics", title.replace(" - PornPics.com", ''))
+    folder_name = "/home/aiden178/.config/fastfetch/logo"
     
     # Create a folder if it doesn't exist
     os.makedirs(folder_name, exist_ok=True)
